@@ -1,0 +1,98 @@
+HAEMATOCRIT - Hematocrit, also known as HCT, is a blood test that measures the percentage of red blood cells in your blood:
+		Red blood cells is used for carrying the oxygen from lungs to body tissues and organs and carry CO2 from 		same to lungs
+
+HAEMOGLOBINS - Hemoglobin is a protein in red blood cells that carries oxygen from the lungs to the body's tissues and 		organs, and carbon dioxide back to the lungs:
+
+ERYTHROCYTE - An erythrocyte is a red blood cell, which is a type of blood cell that carries oxygen from the lungs to the 		body's tissues and organs: contain hemoglobin, an iron-rich protein
+		remove waste from the body
+		are produced in the bone marrow and typically live for about 120 days
+		40-45% of blood's volume
+
+LEUCOCYTE -     A leukocyte, also known as a white blood cell (WBC), is a type of blood cell that helps fight infection and 		disease:
+		 travel through the bloodstream and lymph tissue to where they are needed. 
+		made in the bone marrow and stored in the blood and lymph tissues. 
+		----A high white blood cell count is normal during pregnancy because the body is under stress from carrying 		a baby
+		normal range Men: 40.7–50.3% Women: 36.1–44.3% Infants: 32–42%
+	
+THROMBOCYTE	Platelets, or thrombocytes, are small, colorless cell fragments in our blood that form clots and stop or 			prevent bleeding. Platelets are made in our bone marrow, the sponge-like tissue inside our bones. 
+		----normal range  150,000 and 450,000
+
+MCH		MCH stands for mean corpuscular hemoglobin, which is a measurement of the average amount of hemoglobin in 			red blood cells. Hemoglobin is a protein that carries oxygen from the lungs to the body's organs and 				tissues.
+		normal range - adults is 27–33 picograms (pg) per red blood cell (RBC)
+
+MCHC 		MCHC is different from mean corpuscular hemoglobin (MCH), which measures the average amount of hemoglobin 			per red blood cell, but doesn't consider the size of the RBCs. MCHC takes both the amount of hemoglobin and 		the size of the RBCs into account.
+		normal range - 32–36 grams per deciliter (g/dL) or 320–360 grams per liter (g/L):
+
+MCV		mean corpuscular volume. An MCV blood test measures the average size of your red blood cells.An MCV blood 			test is often part of a complete blood count (CBC), a group of tests that measures the number 		and 		type of cells in your blood. It is used to check your general health.
+		normal range - 80–100 femtoliters (fl)
+
+
+import numpy as np
+import pandas as pd
+import streamlit as st
+import pickle
+from sklearn.ensemble import RandomForestClassifier
+
+st.header("Patient Care Classification System")
+
+with open('random_forest_model.pkl','rb') as model_file:
+        rf_model = pickle.load(model_file)
+
+# User Input
+st_HAEMATOCRIT = st.number_input("Enter HAEMATOCRIT Value: ")
+st_HAEMOGLOBINS = st.number_input("Enter HAEMOGLOBINS Value: ")
+st_ERYTHROCYTE = st.number_input("Enter ERYTHROCYTE Value: ")
+st_LEUCOCYTE = st.number_input("Enter LEUCOCYTE Value: ")
+st_THROMBOCYTE = st.number_input("Enter THROMBOCYTE Value: ")
+st_MCH = st.number_input("Enter MCH Value: ")
+st_MCHC = st.number_input("Enter MCHC Value: ")
+st_MCV = st.number_input("Enter MCV Value: ")
+st_AGE = st.number_input("Enter AGE Value: ")
+st_SEX = st.number_input("Enter SEX (Enter 1 for Male and 0 for Female) Value: ")
+
+user_data = [
+        [
+        st_HAEMATOCRIT,
+        st_HAEMOGLOBINS,
+        st_ERYTHROCYTE,
+        st_LEUCOCYTE,
+        st_THROMBOCYTE,
+        st_MCH,
+        st_MCHC,
+        st_MCV,
+        st_AGE,
+        st_SEX,
+        ]
+]
+
+cols = [
+    [
+        "HAEMATOCRIT",
+        "HAEMOGLOBINS",
+        "ERYTHROCYTE",
+        "LEUCOCYTE",
+        "THROMBOCYTE",
+        "MCH",
+        "MCHC",
+        "MCV",
+        "AGE",
+        "SEX",
+    ]
+]
+
+pd_test_df = pd.DataFrame(user_data, columns=cols)
+
+st.subheader("User Input")
+st.write(pd_test_df)
+
+rf_predict_user_data = rf_model.predict(pd_test_df)
+
+if rf_predict_user_data == 0:
+    care = "Out Care(Home Care) Required"
+else:
+    care = "In Care (Hospitalization) Required"
+
+st.subheader("Action to Take")
+st.write(care)
+
+
